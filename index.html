@@ -413,6 +413,156 @@
                 answer: "PGW/SGW",
                 rationale: "Correct. The gateways (SGW and PGW) are on the data path and are the points where traffic can be intercepted when legally required."
             },
+    {
+        question: "The interface between eNodeB and MME is called -",
+        options: ["S1-MME", "S1-U", "S6a", "S5"],
+        answer: "S1-MME",
+        rationale: "S1-MME is used for control plane (signaling) communication between eNodeB and MME."
+    },
+    {
+        question: "The interface between eNodeB and SGW is -",
+        options: ["S1-U", "S1-MME", "Uu", "S5"],
+        answer: "S1-U",
+        rationale: "S1-U handles user plane data transfer between eNodeB and Serving Gateway."
+    },
+    {
+        question: "PGW connects LTE network to which of the following?",
+        options: ["2G network", "Internet / External networks", "HSS", "MME"],
+        answer: "Internet / External networks",
+        rationale: "PGW connects the LTE core to external packet data networks like the Internet and allocates IP addresses."
+    },
+    {
+        question: "HSS is responsible for",
+        options: ["Managing handover", "Storing subscriber data and authentication", "Routing user data packets", "Allocating IP addresses"],
+        answer: "Storing subscriber data and authentication",
+        rationale: "HSS stores subscriber profiles, authentication credentials, and service entitlements."
+    },
+    {
+        question: "PCRF in LTE is mainly used for",
+        options: ["Mobility control", "Power management", "Policy and charging control", "Frequency allocation"],
+        answer: "Policy and charging control",
+        rationale: "PCRF defines and enforces policy and charging rules for QoS management."
+    },
+    {
+        question: "Which interface connects SGW and PGW?",
+        options: ["S1-U", "S5/S8", "S6a", "X2"],
+        answer: "S5/S8",
+        rationale: "S5 is used within the same operator; S8 is used when roaming between operators."
+    },
+    {
+        question: "The interface between MME and HSS is",
+        options: ["S1-MME", "S5", "S6a", "X2"],
+        answer: "S6a",
+        rationale: "S6a interface is used for user authentication and profile data exchange between MME and HSS."
+    },
+    {
+        question: "The main goal of LTE architecture is to achieve -",
+        options: ["Higher data rates and low latency", "More circuit switching", "Complex network hierarchy", "Limited mobility"],
+        answer: "Higher data rates and low latency",
+        rationale: "LTE aims to offer faster internet, lower delay, and improved mobility."
+    },
+    {
+        question: "EPC uses which type of network design?",
+        options: ["Circuit-switched", "Packet-switched (All-IP)", "Hybrid-switched", "Time-switched"],
+        answer: "Packet-switched (All-IP)",
+        rationale: "EPC uses an All-IP architecture where both voice and data are transmitted over IP packets."
+    },
+    {
+        question: "Which EPC component handles user authentication?",
+        options: ["PGW", "SGW", "HSS", "PCRF"],
+        answer: "HSS",
+        rationale: "HSS stores subscriber authentication data and profiles for secure access."
+    },
+    {
+        question: "The user plane entity that routes user data is",
+        options: ["MME", "SGW", "HSS", "PCRF"],
+        answer: "SGW",
+        rationale: "SGW routes and forwards user data packets between eNodeB and PGW."
+    },
+    {
+        question: "Which EPC node connects LTE to the Internet?",
+        options: ["MME", "SGW", "PGW", "HSS"],
+        answer: "PGW",
+        rationale: "PGW connects LTE to external packet networks like the Internet."
+    },
+    {
+        question: "Which node assigns IP addresses to UEs?",
+        options: ["MME", "SGW", "PGW", "PCRF"],
+        answer: "PGW",
+        rationale: "PGW is responsible for IP address allocation and enforcing policies."
+    },
+    {
+        question: "The database storing subscriber information is",
+        options: ["PCRF", "HSS", "SGW", "MME"],
+        answer: "HSS",
+        rationale: "HSS contains user profiles, authentication keys, and subscription data."
+    },
+    {
+        question: "PCRF stands for",
+        options: ["Policy and Charging Rules Function", "Packet and Connection Routing Function", "Policy Control Resource Function", "Public Core Routing Framework"],
+        answer: "Policy and Charging Rules Function",
+        rationale: "PCRF defines and applies QoS and charging policies in LTE networks."
+    },
+    {
+        question: "Which interface connects MME and HSS?",
+        options: ["S1-MME", "S6a", "S5", "Gx"],
+        answer: "S6a",
+        rationale: "S6a interface is used for authentication and subscriber data exchange."
+    },
+    {
+        question: "The interface between eNodeB and SGW for user data is",
+        options: ["S1-U", "S1-MME", "S5", "Gx"],
+        answer: "S1-U",
+        rationale: "S1-U carries the user plane traffic (actual data packets) between eNodeB and SGW."
+    },
+    {
+        question: "Which interface connects eNodeB to MME for signaling?",
+        options: ["S1-U", "S1-MME", "S6a", "X2"],
+        answer: "S1-MME",
+        rationale: "S1-MME is used for control plane signaling between eNodeB and MME."
+    },
+    {
+        question: "The interface between SGW and PGW is",
+        options: ["S5/S8", "S6a", "Gx", "Uu"],
+        answer: "S5/S8",
+        rationale: "S5 is used within the same operator, while S8 is used for roaming scenarios."
+    },
+    {
+        question: "The interface used between PGW and PCRF is",
+        options: ["S6a", "Gx", "S1-U", "X2"],
+        answer: "Gx",
+        rationale: "Gx interface manages policy and charging control between PGW and PCRF."
+    },
+    {
+        question: "Which of the following belongs to the control plane?",
+        options: ["SGW", "PGW", "MME", "eNodeB"],
+        answer: "MME",
+        rationale: "MME handles control signaling; SGW and PGW handle user plane functions."
+    },
+    {
+        question: "SGW acts as a mobility anchor during",
+        options: ["Idle mode", "Intra-LTE handovers", "Authentication process", "IP allocation"],
+        answer: "Intra-LTE handovers",
+        rationale: "SGW maintains user data continuity when UE moves between eNodeBs."
+    },
+    {
+        question: "Which EPC element enforces QoS for data traffic?",
+        options: ["HSS", "MME", "PCRF", "SGW"],
+        answer: "PCRF",
+        rationale: "PCRF defines and enforces Quality of Service and charging policies for user traffic."
+    },
+    {
+        question: "Which function is performed by PGW?",
+        options: ["Authentication", "Routing control plane messages", "IP address allocation and Internet connectivity", "Handover control"],
+        answer: "IP address allocation and Internet connectivity",
+        rationale: "PGW allocates IP addresses and routes data between LTE and external packet networks."
+    },
+    {
+        question: "EPC architecture separates",
+        options: ["Voice and data", "Control plane and user plane", "Core and access networks", "Frequency and bandwidth"],
+        answer: "Control plane and user plane",
+        rationale: "This separation improves efficiency, scalability, and reduces latency in LTE architecture."
+    },
             {
                 question: "Which 3G technology is considered the evolutionary path for GSM networks?",
                 options: ["WCDMA", "CDMA2000", "TD-SCDMA", "GPRS"],
