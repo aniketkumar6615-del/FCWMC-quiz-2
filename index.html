@@ -18,25 +18,50 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .quiz-option.selected {
-            border-color: #3b82f6; /* blue-500 */
-            background-color: #eff6ff; /* blue-50 */
+            border-color: #3b82f6;
+            background-color: #eff6ff;
         }
         .quiz-option.correct {
-            border-color: #22c55e; /* green-500 */
-            background-color: #f0fdf4; /* green-50 */
+            border-color: #22c55e;
+            background-color: #f0fdf4;
         }
         .quiz-option.incorrect {
-            border-color: #ef4444; /* red-500 */
-            background-color: #fef2f2; /* red-50 */
+            border-color: #ef4444;
+            background-color: #fef2f2;
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex items-center justify-center min-h-screen p-4">
 
     <div id="quiz-container" class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <!-- Quiz Selection Menu -->
+        <div id="quiz-menu" class="">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">FCWMC Unit-2 Quiz</h1>
+            <p class="text-slate-500 mb-6">Created by Adi Bhai😎. Choose a quiz to start:</p>
+            <div class="space-y-3">
+                <button id="adi-quiz-btn" class="w-full bg-blue-600 text-white font-semibold py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors text-left flex items-center justify-between">
+                    <div>
+                        <div class="text-lg">Adi's FCWMC Quiz</div>
+                        <div class="text-sm text-blue-100">60 questions covering Unit-2 topics</div>
+                    </div>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button id="rosh-quiz-btn" class="w-full bg-purple-600 text-white font-semibold py-4 px-6 rounded-lg hover:bg-purple-700 transition-colors text-left flex items-center justify-between">
+                    <div>
+                        <div class="text-lg">Rosh FCWMC Quiz</div>
+                        <div class="text-sm text-purple-100">50 questions from FCWMC Unit-2 MCQ PDF</div>
+                    </div>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+
         <!-- Quiz Header -->
-        <div id="quiz-header" class="mb-6">
-            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">FCWMC Unit-2 Quiz</h1>
+        <div id="quiz-header" class="mb-6 hidden">
+            <div class="flex items-center justify-between mb-2">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900" id="quiz-title">FCWMC Unit-2 Quiz</h1>
+                <button id="back-to-menu-btn" class="text-slate-600 hover:text-slate-900 font-medium text-sm">← Back to Menu</button>
+            </div>
             <p class="text-slate-500 mt-1">Created by Adi Bhai😎.</p>
         </div>
 
@@ -61,7 +86,7 @@
                 <p class="text-5xl font-extrabold text-blue-600 mb-6" id="score-text">0/60</p>
                 <div id="score-feedback" class="mb-6 text-lg"></div>
                 <button id="restart-btn" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                    Restart Quiz
+                    Back to Menu
                 </button>
             </div>
         </div>
@@ -75,7 +100,7 @@
     </div>
 
     <script>
-        const quizData = [
+        const adiQuizData = [
             {
                 question: "What does \"3G\" stand for?",
                 options: ["Third Grade", "Third Generation", "Third Global", "Third Group"],
@@ -438,7 +463,346 @@
             }
         ];
 
+        const roshQuizData = [
+            {
+                question: "Which country first launched 3G services?",
+                options: ["USA", "Japan", "Sweden", "Norway"],
+                answer: "Japan",
+                rationale: "Japan's NTT DoCoMo launched the first 3G network in 2001."
+            },
+            {
+                question: "Which is the main 4G technology widely used worldwide?",
+                options: ["WCDMA", "CDMA2000", "LTE", "GSM"],
+                answer: "LTE",
+                rationale: "LTE (Long Term Evolution) became the dominant 4G technology."
+            },
+            {
+                question: "What was a major limitation of 3G?",
+                options: ["Low latency", "High data speed", "Hybrid network complexity", "Fully IP-based network"],
+                answer: "Hybrid network complexity",
+                rationale: "3G used circuit-switched + packet-switched architecture, making it complex."
+            },
+            {
+                question: "Approximate maximum speed of LTE for mobile users?",
+                options: ["2 Mbps", "10 Mbps", "100 Mbps", "1 Gbps"],
+                answer: "100 Mbps",
+                rationale: "LTE supports up to 100 Mbps for mobile users."
+            },
+            {
+                question: "Which technology reduces latency in LTE?",
+                options: ["WCDMA", "OFDMA", "CDMA2000", "GSM"],
+                answer: "OFDMA",
+                rationale: "OFDMA enables efficient spectrum use and low latency."
+            },
+            {
+                question: "What does eNodeB combine in LTE?",
+                options: ["NodeB + RNC", "PGW + SGW", "MME + HSS", "PCRF + UE"],
+                answer: "NodeB + RNC",
+                rationale: "LTE merges NodeB (base station) and RNC functions into one eNodeB."
+            },
+            {
+                question: "Which component allocates IP addresses in LTE?",
+                options: ["MME", "SGW", "PGW", "eNodeB"],
+                answer: "PGW",
+                rationale: "PGW assigns IP addresses to UEs for internet access."
+            },
+            {
+                question: "Which interface connects UE and eNodeB?",
+                options: ["S1-MME", "S1-U", "X2", "Uu"],
+                answer: "Uu",
+                rationale: "Uu is the radio interface between UE and eNodeB."
+            },
+            {
+                question: "Which EPC component stores subscriber info?",
+                options: ["MME", "HSS", "SGW", "PGW"],
+                answer: "HSS",
+                rationale: "HSS keeps authentication data and subscription profiles."
+            },
+            {
+                question: "Which interface allows handover between eNodeBs?",
+                options: ["Uu", "S1-MME", "S1-U", "X2"],
+                answer: "X2",
+                rationale: "X2 connects eNodeBs for seamless handovers."
+            },
+            {
+                question: "What is the main purpose of the Attach Procedure?",
+                options: ["Allocate radio channels", "Register UE and assign IP", "Handover control", "Billing only"],
+                answer: "Register UE and assign IP",
+                rationale: "Attach procedure registers the UE and establishes default bearer with an IP."
+            },
+            {
+                question: "Which network element handles authentication during attach?",
+                options: ["eNodeB", "PGW", "MME", "SGW"],
+                answer: "MME",
+                rationale: "MME authenticates the UE by contacting HSS."
+            },
+            {
+                question: "When is the IP address allocated?",
+                options: ["During handover", "During Attach / PDN Connectivity", "During encryption setup", "During call termination"],
+                answer: "During Attach / PDN Connectivity",
+                rationale: "IP is assigned when the UE establishes a default bearer."
+            },
+            {
+                question: "Default bearer in LTE is used for:",
+                options: ["Voice only", "Signaling only", "Initial data connection", "Handover signaling"],
+                answer: "Initial data connection",
+                rationale: "Default bearer carries IP packets for UE data."
+            },
+            {
+                question: "Which interface does UE use to send Attach Request?",
+                options: ["S1-U", "Uu", "X2", "S5"],
+                answer: "Uu",
+                rationale: "UE communicates via Uu (radio interface) to eNodeB, which forwards to MME."
+            },
+            {
+                question: "Why LTE authentication is needed?",
+                options: ["For billing only", "To verify UE and protect data", "To reduce latency", "To assign radio channels"],
+                answer: "To verify UE and protect data",
+                rationale: "Authentication ensures only valid users connect and data is secure."
+            },
+            {
+                question: "Which component verifies subscriber credentials?",
+                options: ["SGW", "HSS", "eNodeB", "PCRF"],
+                answer: "HSS",
+                rationale: "HSS stores SIM info and authentication keys."
+            },
+            {
+                question: "Which step is first in authentication?",
+                options: ["UE sends Attach Request", "MME compares RES", "UE computes RES", "Keys are generated"],
+                answer: "UE sends Attach Request",
+                rationale: "Attach Request initiates authentication."
+            },
+            {
+                question: "What protects user data in LTE?",
+                options: ["Uu interface only", "Encryption", "PGW only", "Handover"],
+                answer: "Encryption",
+                rationale: "Encryption ensures confidentiality of data between UE and network."
+            },
+            {
+                question: "Which algorithm can be used for LTE security?",
+                options: ["AES", "HTML", "CSS", "FTP"],
+                answer: "AES",
+                rationale: "AES or SNOW 3G is used for ciphering and integrity protection."
+            },
+            {
+                question: "What is a handover in mobile networks?",
+                options: ["Switching data type", "Changing network cell without dropping call", "Disconnecting UE", "Allocating IP"],
+                answer: "Changing network cell without dropping call",
+                rationale: "Handover ensures ongoing call/data continues when moving between cells."
+            },
+            {
+                question: "Intra-RAT handover happens between:",
+                options: ["Different RATs", "Same RAT", "Different networks", "Internet only"],
+                answer: "Same RAT",
+                rationale: "Intra-RAT = LTE → LTE or UMTS → UMTS."
+            },
+            {
+                question: "Inter-RAT handover happens between:",
+                options: ["LTE → LTE", "UMTS → UMTS", "LTE → 3G", "Same cell"],
+                answer: "LTE → 3G",
+                rationale: "Inter-RAT = moving between different technologies (LTE ↔ 3G/2G)."
+            },
+            {
+                question: "Which interface helps smooth handover between LTE towers?",
+                options: ["Uu", "S1-MME", "X2", "S5"],
+                answer: "X2",
+                rationale: "X2 interface allows direct signaling between source and target eNodeB."
+            },
+            {
+                question: "Seamless connectivity ensures:",
+                options: ["Call drops occasionally", "No interruptions while moving", "Only data works", "No authentication needed"],
+                answer: "No interruptions while moving",
+                rationale: "Seamless connectivity keeps calls and data uninterrupted even while moving."
+            },
+            {
+                question: "Which LTE entity assigns an IP address to the UE during default bearer setup?",
+                options: ["eNodeB", "MME", "SGW", "PGW"],
+                answer: "PGW",
+                rationale: "PGW (Packet Data Network Gateway) allocates the IP address to the UE when the default bearer is established."
+            },
+            {
+                question: "The default bearer in LTE:",
+                options: ["Provides special QoS for voice only", "Provides always-on IP connectivity", "Is optional", "Is created after dedicated bearers"],
+                answer: "Provides always-on IP connectivity",
+                rationale: "The default bearer is automatically established to provide continuous IP connectivity."
+            },
+            {
+                question: "Dedicated bearers are typically used for:",
+                options: ["Always-on connectivity", "Services requiring specific QoS like VoIP", "IP address assignment", "Authentication"],
+                answer: "Services requiring specific QoS like VoIP",
+                rationale: "Dedicated bearers provide tailored QoS for services like voice or video that require specific performance."
+            },
+            {
+                question: "What does ARP indicate in a bearer?",
+                options: ["Packet delay budget", "Priority during network congestion", "IP address allocation", "Security level"],
+                answer: "Priority during network congestion",
+                rationale: "ARP (Allocation and Retention Priority) defines the priority of a bearer during congestion."
+            },
+            {
+                question: "Correct order of LTE session creation:",
+                options: ["Default bearer → Attach request → Radio bearer setup", "Attach request → Default bearer setup → Radio bearer setup", "Radio bearer setup → Attach request → Default bearer setup", "Dedicated bearer → Default bearer → Attach request"],
+                answer: "Attach request → Default bearer setup → Radio bearer setup",
+                rationale: "First UE sends Attach Request, then default bearer is established, followed by radio bearer setup."
+            },
+            {
+                question: "PDCP sits between which layers in LTE?",
+                options: ["MAC and PHY", "RLC and IP", "MAC and RLC", "NAS and MAC"],
+                answer: "RLC and IP",
+                rationale: "PDCP is above RLC and below IP/NAS layers, providing functions like header compression and security."
+            },
+            {
+                question: "Main function of PDCP in user plane:",
+                options: ["Channel coding", "Header compression", "Scheduling", "Random access"],
+                answer: "Header compression",
+                rationale: "PDCP compresses IP headers to reduce bandwidth usage on the radio interface."
+            },
+            {
+                question: "Which PDCP feature ensures packets are delivered in the correct order?",
+                options: ["ARQ", "Reordering", "Segmentation", "HARQ"],
+                answer: "Reordering",
+                rationale: "PDCP reorders packets received out-of-sequence from lower layers before passing them up."
+            },
+            {
+                question: "Integrity protection in PDCP is applied for:",
+                options: ["User plane data", "Control plane signaling", "Physical layer signals", "MAC scheduling"],
+                answer: "Control plane signaling",
+                rationale: "Integrity protection ensures that signaling messages are not tampered with."
+            },
+            {
+                question: "ROHC (Robust Header Compression) is implemented at:",
+                options: ["RLC layer", "PDCP layer", "MAC layer", "PHY layer"],
+                answer: "PDCP layer",
+                rationale: "ROHC is applied at PDCP to compress IP/UDP/RTP headers and save bandwidth."
+            },
+            {
+                question: "RLC is part of which LTE layer?",
+                options: ["Layer 1", "Layer 2", "Layer 3", "NAS"],
+                answer: "Layer 2",
+                rationale: "RLC is a sublayer of Layer 2 (Data Link Layer) handling segmentation, reassembly, and error correction."
+            },
+            {
+                question: "Which RLC mode provides reliable delivery with retransmission?",
+                options: ["Transparent Mode (TM)", "Unacknowledged Mode (UM)", "Acknowledged Mode (AM)", "Control Mode (CM)"],
+                answer: "Acknowledged Mode (AM)",
+                rationale: "AM mode uses ARQ to detect and retransmit lost/corrupted PDUs."
+            },
+            {
+                question: "Segmentation and reassembly in RLC is used for:",
+                options: ["Security", "Splitting large SDUs into smaller PDUs", "Scheduling", "Resource mapping"],
+                answer: "Splitting large SDUs into smaller PDUs",
+                rationale: "Large PDCP SDUs are split into RLC PDUs suitable for MAC transmission."
+            },
+            {
+                question: "Duplicate detection in RLC prevents:",
+                options: ["Lost packets", "Redundant PDUs", "Security breaches", "Synchronization errors"],
+                answer: "Redundant PDUs",
+                rationale: "RLC removes duplicate PDUs to avoid unnecessary retransmissions."
+            },
+            {
+                question: "RLC Transparent Mode (TM) is mainly used for:",
+                options: ["Reliable data transmission", "Voice services", "Broadcast/multicast like MBMS", "Internet traffic"],
+                answer: "Broadcast/multicast like MBMS",
+                rationale: "TM mode passes data transparently without error correction, suitable for broadcast/multicast."
+            },
+            {
+                question: "MAC layer is responsible for:",
+                options: ["Header compression", "Scheduling and multiplexing", "Modulation", "IP routing"],
+                answer: "Scheduling and multiplexing",
+                rationale: "MAC schedules resources, multiplexes data, and manages logical-to-transport channel mapping."
+            },
+            {
+                question: "HARQ in MAC combines:",
+                options: ["ARQ + PHY coding", "PDCP + RLC", "RLC + PDCP", "NAS + RRC"],
+                answer: "ARQ + PHY coding",
+                rationale: "HARQ combines retransmission with FEC to recover errors quickly."
+            },
+            {
+                question: "MAC receives buffer status reports (BSR) from:",
+                options: ["eNodeB", "UE", "PGW", "MME"],
+                answer: "UE",
+                rationale: "UE sends BSR to inform eNodeB about buffered data for efficient scheduling."
+            },
+            {
+                question: "Which is NOT a function of MAC?",
+                options: ["Scheduling", "Logical → transport channel mapping", "Segmentation of SDUs", "Random access management"],
+                answer: "Segmentation of SDUs",
+                rationale: "Segmentation is handled by RLC, not MAC."
+            },
+            {
+                question: "MAC scheduler allocates resources every:",
+                options: ["1 second", "1 ms", "10 ms", "100 ms"],
+                answer: "1 ms",
+                rationale: "LTE uses a Transmission Time Interval (TTI) of 1 ms for scheduling resources."
+            },
+            {
+                question: "PHY layer is part of which LTE layer?",
+                options: ["Layer 1", "Layer 2", "Layer 3", "NAS"],
+                answer: "Layer 1",
+                rationale: "PHY is the physical layer responsible for actual radio transmission and reception."
+            },
+            {
+                question: "Downlink in LTE uses which modulation scheme?",
+                options: ["SC-FDMA", "OFDM", "QPSK only", "HARQ"],
+                answer: "OFDM",
+                rationale: "OFDM is used in LTE downlink for multi-carrier transmission."
+            },
+            {
+                question: "SC-FDMA is used in LTE for:",
+                options: ["Downlink", "Uplink", "Both uplink and downlink", "Control signaling"],
+                answer: "Uplink",
+                rationale: "SC-FDMA reduces Peak-to-Average Power Ratio (PAPR) in uplink, saving UE battery."
+            },
+            {
+                question: "Technique for multiple antennas to improve throughput:",
+                options: ["ARQ", "HARQ", "MIMO", "ROHC"],
+                answer: "MIMO",
+                rationale: "MIMO uses multiple antennas for spatial multiplexing and diversity."
+            },
+            {
+                question: "Resource Blocks (RBs) in LTE PHY:",
+                options: ["12 subcarriers × 1 ms", "12 subcarriers × 0.5 ms", "24 subcarriers × 1 ms", "24 subcarriers × 0.5 ms"],
+                answer: "12 subcarriers × 0.5 ms",
+                rationale: "Each RB is 12 subcarriers wide in frequency and 0.5 ms in time."
+            },
+            {
+                question: "Plane carrying user data (video, browsing):",
+                options: ["Control Plane", "User Plane", "Both", "None"],
+                answer: "User Plane",
+                rationale: "User Plane carries actual payload traffic like IP packets, voice, and video."
+            },
+            {
+                question: "Control plane messages include:",
+                options: ["IP packets", "Bearer setup, handover, authentication", "Streaming video", "File download"],
+                answer: "Bearer setup, handover, authentication",
+                rationale: "Control Plane handles signaling and network control functions."
+            },
+            {
+                question: "LTE core element handling user plane traffic:",
+                options: ["MME", "SGW/PGW", "HSS", "eNodeB"],
+                answer: "SGW/PGW",
+                rationale: "SGW/PGW forward user data; MME handles signaling."
+            },
+            {
+                question: "Security in control plane includes:",
+                options: ["Only encryption", "Integrity + encryption", "None", "Only hashing"],
+                answer: "Integrity + encryption",
+                rationale: "Control plane messages need integrity checks and encryption to prevent tampering."
+            },
+            {
+                question: "Data volume comparison between planes:",
+                options: ["Control plane > User plane", "Control plane = User plane", "Control plane < User plane", "None"],
+                answer: "Control plane < User plane",
+                rationale: "User plane carries much more data (actual content) compared to control plane (signaling)."
+            }
+        ];
+
         // --- DOM Elements ---
+        const quizMenu = document.getElementById('quiz-menu');
+        const quizHeader = document.getElementById('quiz-header');
+        const adiQuizBtn = document.getElementById('adi-quiz-btn');
+        const roshQuizBtn = document.getElementById('rosh-quiz-btn');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const quizTitle = document.getElementById('quiz-title');
         const questionArea = document.getElementById('question-area');
         const scoreArea = document.getElementById('score-area');
         const questionCounter = document.getElementById('question-counter');
@@ -454,9 +818,31 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let answerSelected = false;
+        let quizData = [];
+        let currentQuizName = '';
 
         // --- Functions ---
-        function startQuiz() {
+        function showMenu() {
+            quizMenu.classList.remove('hidden');
+            quizHeader.classList.add('hidden');
+            questionArea.style.display = 'none';
+            scoreArea.style.display = 'none';
+            nextBtn.parentElement.style.display = 'none';
+        }
+
+        function startQuiz(quizType) {
+            if (quizType === 'adi') {
+                quizData = adiQuizData;
+                currentQuizName = "Adi's FCWMC Quiz";
+            } else {
+                quizData = roshQuizData;
+                currentQuizName = "Rosh FCWMC Quiz";
+            }
+            
+            quizTitle.textContent = currentQuizName;
+            quizMenu.classList.add('hidden');
+            quizHeader.classList.remove('hidden');
+            
             currentQuestionIndex = 0;
             score = 0;
             answerSelected = false;
@@ -506,7 +892,7 @@
                 feedbackArea.classList.remove('text-red-600');
             } else {
                 selectedButton.classList.add('incorrect');
-                feedbackArea.textContent = `Incorrect. The correct answer is "${currentQuestion.answer}".`;
+                feedbackArea.textContent = `Incorrect. The correct answer is "${currentQuestion.answer}". ${currentQuestion.rationale || ''}`;
                 feedbackArea.classList.add('text-red-600');
                 feedbackArea.classList.remove('text-green-600');
             }
@@ -554,11 +940,14 @@
         }
 
         // --- Event Listeners ---
+        adiQuizBtn.addEventListener('click', () => startQuiz('adi'));
+        roshQuizBtn.addEventListener('click', () => startQuiz('rosh'));
+        backToMenuBtn.addEventListener('click', showMenu);
         nextBtn.addEventListener('click', handleNextButton);
-        restartBtn.addEventListener('click', startQuiz);
+        restartBtn.addEventListener('click', showMenu);
 
         // --- Initial Load ---
-        startQuiz();
+        showMenu();
     </script>
 </body>
 </html>
