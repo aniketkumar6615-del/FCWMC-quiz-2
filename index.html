@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireless & Mobile Communication Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+        }
+        .quiz-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .quiz-option.selected {
+            border-color: #3b82f6; /* blue-500 */
+            background-color: #eff6ff; /* blue-50 */
+        }
+        .quiz-option.correct {
+            border-color: #22c55e; /* green-500 */
+            background-color: #f0fdf4; /* green-50 */
+        }
+        .quiz-option.incorrect {
+            border-color: #ef4444; /* red-500 */
+            background-color: #fef2f2; /* red-50 */
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <!-- Quiz Header -->
+        <div id="quiz-header" class="mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Mobile Communication Quiz</h1>
+            <p class="text-slate-500 mt-1">Test your knowledge on 3G, 4G, LTE, and EPC.</p>
+        </div>
+
+        <!-- Quiz Body -->
+        <div id="quiz-body">
+            <!-- Question Area -->
+            <div id="question-area" class="">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm font-semibold text-blue-600" id="question-counter">Question 1/60</p>
+                </div>
+                <h2 class="text-lg md:text-xl font-semibold mb-5" id="question-text">Loading question...</h2>
+                <div id="options-container" class="space-y-3">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+                <div id="feedback-area" class="mt-4 text-sm font-medium"></div>
+            </div>
+
+            <!-- Score Area -->
+            <div id="score-area" class="hidden text-center">
+                <h2 class="text-2xl font-bold mb-2">Quiz Completed!</h2>
+                <p class="text-slate-600 mb-4">Your final score is:</p>
+                <p class="text-5xl font-extrabold text-blue-600 mb-6" id="score-text">0/60</p>
+                <div id="score-feedback" class="mb-6 text-lg"></div>
+                <button id="restart-btn" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                    Restart Quiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Footer -->
+        <div id="quiz-footer" class="mt-6 pt-6 border-t border-slate-200">
+             <button id="next-btn" class="w-full bg-slate-800 text-white font-semibold py-3 px-4 rounded-lg hover:bg-slate-900 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors">
+                Next Question
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What does \"3G\" stand for?",
+                options: ["Third Grade", "Third Generation", "Third Global", "Third Group"],
+                answer: "Third Generation",
+                rationale: "Correct. 3G represents the third generation of wireless mobile telecommunications technology."
+            },
+            {
+                question: "3G technology was introduced around which year?",
+                options: ["1990", "1995", "Early 2000s", "2010"],
+                answer: "Early 2000s",
+                rationale: "Correct. The first commercial 3G networks were launched in the early 2000s."
+            },
+            {
+                question: "Which organization standardized 3G under the IMT-2000 framework?",
+                options: ["IEEE", "ITU (International Telecommunication Union)", "3GPP", "ISO"],
+                answer: "ITU (International Telecommunication Union)",
+                rationale: "Correct. The ITU, a specialized agency of the UN, defined the IMT-2000 specifications for 3G."
+            },
+            {
+                question: "What are the main 3G standards?",
+                options: ["GSM and LTE", "WCDMA and CDMA2000", "Wi-Fi and WiMAX", "EDGE and GPRS"],
+                answer: "WCDMA and CDMA2000",
+                rationale: "Correct. These were the two major families of 3G standards that evolved from different 2G paths."
+            },
+            {
+                question: "The theoretical peak data rate of 3G is approximately:",
+                options: ["256 kbps", "2 Mbps", "10 Mbps", "100 Mbps"],
+                answer: "2 Mbps",
+                rationale: "Correct. Early 3G standards aimed for peak data rates of around 2 Mbps, a significant jump from 2G."
+            },
+            {
+                question: "What type of network architecture was used in 3G?",
+                options: ["Fully packet-switched", "Hybrid (Circuit + Packet)", "Only circuit-switched", "Optical network"],
+                answer: "Hybrid (Circuit + Packet)",
+                rationale: "Correct. 3G networks used circuit-switching for voice calls and packet-switching for data services."
+            },
+            {
+                question: "Which of the following was NOT a typical service of early 3G?",
+                options: ["Voice calls", "SMS", "HD video streaming", "Basic web browsing"],
+                answer: "HD video streaming",
+                rationale: "Correct. While 3G enabled basic video calling and streaming, the bandwidth was insufficient for reliable High-Definition (HD) streaming."
+            },
+            {
+                question: "What is the typical latency of a 3G network?",
+                options: ["<10 ms", "20-50 ms", "100-500 ms", ">1 second"],
+                answer: "100-500 ms",
+                rationale: "Correct. 3G networks had higher latency compared to modern networks, affecting the responsiveness of applications."
+            },
+            {
+                question: "What was the main reason for developing 4G technology?",
+                options: ["To replace mobile phones", "To increase data rate and reduce latency", "To support only SMS", "To reduce mobile costs"],
+                answer: "To increase data rate and reduce latency",
+                rationale: "Correct. The primary drivers for 4G were the demand for faster mobile broadband and a more responsive online experience."
+            },
+            {
+                question: "4G standards began development around which year?",
+                options: ["2000", "2005", "2008", "2015"],
+                answer: "2008",
+                rationale: "Correct. Significant development and the first commercial deployments of 4G standards like LTE began around this time."
+            },
+            {
+                question: "What is the dominant 4G technology used worldwide?",
+                options: ["WiMAX", "LTE (Long Term Evolution)", "GSM", "EDGE"],
+                answer: "LTE (Long Term Evolution)",
+                rationale: "Correct. LTE became the global standard for 4G, adopted by the vast majority of mobile operators."
+            },
+            {
+                question: "What is the maximum theoretical data rate for 4G mobile users?",
+                options: ["10 Mbps", "50 Mbps", "100 Mbps", "1 Gbps"],
+                answer: "100 Mbps",
+                rationale: "Correct. The initial LTE standard specified a peak downlink rate of 100 Mbps for mobile users."
+            },
+            {
+                question: "The 4G network architecture is based on which type of switching?",
+                options: ["Circuit-switched", "Packet-switched (All-IP)", "Hybrid", "Optical-switched"],
+                answer: "Packet-switched (All-IP)",
+                rationale: "Correct. 4G uses an All-IP network where all services, including voice, are transported as data packets."
+            },
+            {
+                question: "Which technology is used in 4G for efficient spectrum use?",
+                options: ["FDMA", "OFDMA", "TDMA", "CDMA"],
+                answer: "OFDMA",
+                rationale: "Correct. Orthogonal Frequency Division Multiple Access is used in the 4G downlink to serve multiple users efficiently."
+            },
+            {
+                question: "MIMO technology in 4G helps in:",
+                options: ["Increasing antenna size", "Improving speed and capacity using multiple antennas", "Reducing cost", "Converting analog to digital"],
+                answer: "Improving speed and capacity using multiple antennas",
+                rationale: "Correct. Multiple-Input Multiple-Output uses multiple antennas at both the transmitter and receiver to improve performance."
+            },
+            {
+                question: "What is the typical latency in 4G networks?",
+                options: ["500 ms", "<50 ms", "100 ms", "1 second"],
+                answer: "<50 ms",
+                rationale: "Correct. 4G significantly reduced latency, leading to a much more responsive experience for users."
+            },
+            {
+                question: "Which of the following is a key service of 4G networks?",
+                options: ["SMS only", "Voice over LTE (VoLTE)", "Only audio calling", "None"],
+                answer: "Voice over LTE (VoLTE)",
+                rationale: "Correct. VoLTE allows voice calls to be made over the 4G packet-switched network, offering higher quality."
+            },
+            {
+                question: "Which 4G feature ensures high-quality voice and multimedia delivery?",
+                options: ["IMS (IP Multimedia Subsystem)", "GPS", "GSM", "TCP"],
+                answer: "IMS (IP Multimedia Subsystem)",
+                rationale: "Correct. IMS is the architectural framework for delivering IP multimedia services, like VoLTE, in 4G."
+            },
+            {
+                question: "4G provides mobility support for users traveling at speeds up to:",
+                options: ["50 km/h", "350 km/h", "120 km/h", "500 km/h"],
+                answer: "350 km/h",
+                rationale: "Correct. LTE was designed to maintain a stable connection even for users on high-speed trains."
+            },
+            {
+                question: "The transition from 3G to 4G mainly introduced:",
+                options: ["Voice-only communication", "All-IP high-speed broadband network", "Only SMS and MMS", "Satellite-based calls"],
+                answer: "All-IP high-speed broadband network",
+                rationale: "Correct. This phrase perfectly captures the two main architectural and performance shifts from 3G to 4G."
+            },
+            {
+                question: "LTE stands for:",
+                options: ["Long Time Evolution", "Long Term Evolution", "Low Transmission Efficiency", "Long Telecom Evolution"],
+                answer: "Long Term Evolution",
+                rationale: "Correct. This name was chosen to signify that it would be the standard for many years, evolving over time."
+            },
+            {
+                question: "Which of the following is NOT a part of the high-level LTE architecture?",
+                options: ["User Equipment (UE)", "Base Transceiver Station (BTS)", "E-UTRAN", "Evolved Packet Core (EPC)"],
+                answer: "Base Transceiver Station (BTS)",
+                rationale: "Correct. The BTS is the base station in 2G GSM networks. In LTE, its equivalent is the eNodeB."
+            },
+            {
+                question: "What is the full form of E-UTRAN?",
+                options: ["Evolved Universal Terrestrial Radio Access Network", "Evolved UMTS Terrestrial Radio Access Network", "Enhanced Universal Transmission Radio Access Network", "Evolved Unified Transport Radio Access Network"],
+                answer: "Evolved UMTS Terrestrial Radio Access Network",
+                rationale: "Correct. This signifies that it is the evolution of the 3G (UMTS) radio network."
+            },
+            {
+                question: "Which LTE element directly communicates with the User Equipment (UE) over the air interface?",
+                options: ["MME", "eNodeB", "SGW", "PGW"],
+                answer: "eNodeB",
+                rationale: "Correct. The eNodeB is the LTE base station that handles radio communication with the UE."
+            },
+            {
+                question: "Which component acts as the LTE base station?",
+                options: ["RNC", "eNodeB", "MSC", "HSS"],
+                answer: "eNodeB",
+                rationale: "Correct. The Evolved Node B (eNodeB) is the base station in an LTE network."
+            },
+            {
+                question: "Which part of the LTE core network handles mobility management and authentication?",
+                options: ["SGW", "MME (Mobility Management Entity)", "PGW", "HSS"],
+                answer: "MME (Mobility Management Entity)",
+                rationale: "Correct. Its name says it all: the MME is the primary control node for managing mobility, sessions, and authentication."
+            },
+            {
+                question: "Which radio interface connects the User Equipment (UE) and the eNodeB?",
+                options: ["S1", "Uu", "S6a", "X2"],
+                answer: "Uu",
+                rationale: "Correct. The Uu is the official name for the air interface between the user's device and the base station."
+            },
+            {
+                question: "SGW stands for:",
+                options: ["Switching Gateway", "Serving Gateway", "Service Gateway", "Session Gateway"],
+                answer: "Serving Gateway",
+                rationale: "Correct. It 'serves' the user by routing their data packets and acting as the mobility anchor."
+            },
+            {
+                question: "Which component is responsible for Policy and Charging Control in LTE?",
+                options: ["HSS", "PCRF (Policy and Charging Rules Function)", "MME", "SGW"],
+                answer: "PCRF (Policy and Charging Rules Function)",
+                rationale: "Correct. The PCRF is the part of the network that makes decisions about Quality of Service (QoS) and charging rules."
+            },
+            {
+                question: "A key feature of the LTE architecture is that it has a:",
+                options: ["Complex, hierarchical structure", "Flat and simplified structure", "Circuit-switched structure for voice", "Dependence on the 2G core network"],
+                answer: "Flat and simplified structure",
+                rationale: "Correct. By integrating the RNC functions into the eNodeB, LTE created a flatter, more efficient network."
+            },
+            {
+                question: "Voice services in LTE are provided through:",
+                options: ["VoIP (Voice over Internet Protocol)", "IMS (IP Multimedia Subsystem)", "Circuit Switched Fallback", "The SGW directly"],
+                answer: "IMS (IP Multimedia Subsystem)",
+                rationale: "Correct. IMS is the standardized architecture used to deliver services like Voice over LTE (VoLTE)."
+            },
+            {
+                question: "LTE supports a scalable bandwidth ranging from:",
+                options: ["200 kHz - 1 MHz", "1.4 MHz - 20 MHz", "2 MHz - 40 MHz", "100 kHz - 10 MHz"],
+                answer: "1.4 MHz - 20 MHz",
+                rationale: "Correct. LTE can be deployed in various channel bandwidths, offering flexibility to operators based on their spectrum availability."
+            },
+            {
+                question: "What does EPC stand for in LTE?",
+                options: ["Enhanced Packet Channel", "Evolved Packet Core", "Extended Processing Core", "Efficient Packet Controller"],
+                answer: "Evolved Packet Core",
+                rationale: "Correct. This is the all-IP core network architecture for LTE."
+            },
+            {
+                question: "The EPC is the core network for which generation of mobile technology?",
+                options: ["2G", "4G (LTE)", "3G", "5G"],
+                answer: "4G (LTE)",
+                rationale: "Correct. The Evolved Packet Core was introduced with 4G LTE."
+            },
+            {
+                question: "Which EPC component handles user authentication by checking with the HSS?",
+                options: ["PGW", "MME", "SGW", "PCRF"],
+                answer: "MME",
+                rationale: "Correct. The MME manages the authentication process, acting as the intermediary between the UE and the HSS."
+            },
+            {
+                question: "The main control plane entity in the EPC is the:",
+                options: ["SGW", "MME", "PGW", "HSS"],
+                answer: "MME",
+                rationale: "Correct. The MME is the central node in the control plane, managing signaling, mobility, and sessions."
+            },
+            {
+                question: "Which EPC node is responsible for assigning an IP address to the user's device?",
+                options: ["MME", "PGW (Packet Data Network Gateway)", "SGW", "HSS"],
+                answer: "PGW (Packet Data Network Gateway)",
+                rationale: "Correct. The PGW acts as the gateway to the IP network (internet) and is responsible for allocating an IP address to the UE for its session."
+            },
+            {
+                question: "The database that stores subscriber information, authentication keys, and service profiles is the:",
+                options: ["PCRF", "HSS (Home Subscriber Server)", "MME", "SGW"],
+                answer: "HSS (Home Subscriber Server)",
+                rationale: "Correct. The HSS is the central database for all subscriber-related information."
+            },
+            {
+                question: "What does PCRF stand for?",
+                options: ["Packet and Connection Routing Function", "Policy and Charging Rules Function", "Policy Control Resource Function", "Public Core Routing Framework"],
+                answer: "Policy and Charging Rules Function",
+                rationale: "Correct. This component is responsible for defining the rules for service quality and billing."
+            },
+            {
+                question: "Which interface connects the MME and the HSS?",
+                options: ["S1-MME", "S6a", "S5", "Gx"],
+                answer: "S6a",
+                rationale: "Correct. This interface is used by the MME to fetch authentication and subscription data from the HSS."
+            },
+            {
+                question: "The S1-U interface carries user data between which two network elements?",
+                options: ["eNodeB and SGW", "eNodeB and MME", "SGW and PGW", "MME and HSS"],
+                answer: "eNodeB and SGW",
+                rationale: "Correct. The 'U' in S1-U stands for User Plane, which carries the actual data traffic from the radio network to the core network's serving gateway."
+            },
+            {
+                question: "The interface between the SGW and PGW is:",
+                options: ["S5/S8", "S1-U", "S6a", "Gx"],
+                answer: "S5/S8",
+                rationale: "Correct. S5 is used when the user is in their home network, and S8 is used when they are roaming."
+            },
+            {
+                question: "The interface between the PGW and the PCRF for policy control is:",
+                options: ["Gx", "S1-U", "S6a", "S5/S8"],
+                answer: "Gx",
+                rationale: "Correct. The Gx interface allows the PGW to request policy and charging rules from the PCRF."
+            },
+            {
+                question: "Which of the following EPC components belongs to the control plane?",
+                options: ["MME", "SGW", "PGW", "eNodeB"],
+                answer: "MME",
+                rationale: "Correct. The MME is the primary entity in the control plane, handling signaling."
+            },
+            {
+                question: "During Intra-LTE handovers, which EPC component acts as the mobility anchor for the user plane?",
+                options: ["SGW (Serving Gateway)", "MME", "PGW", "HSS"],
+                answer: "SGW (Serving Gateway)",
+                rationale: "Correct. When a UE moves from one eNodeB to another, the SGW remains the same, ensuring a smooth data session continuity."
+            },
+            {
+                question: "Which EPC element is responsible for enforcing Quality of Service (QoS) for data traffic?",
+                options: ["PCRF", "HSS", "MME", "SGW"],
+                answer: "PCRF",
+                rationale: "Correct. The PCRF defines and applies QoS and charging rules to ensure different services get the appropriate network resources."
+            },
+            {
+                question: "Which function is performed by the PGW?",
+                options: ["Authentication", "IP address allocation and Internet connectivity", "Routing control plane messages", "Handover control"],
+                answer: "IP address allocation and Internet connectivity",
+                rationale: "Correct. The PGW is the gateway to the internet and assigns the user's device its IP address."
+            },
+            {
+                question: "A fundamental principle of the EPC architecture is the separation of:",
+                options: ["Voice and data", "Control plane and user plane", "Core and access networks", "Frequency and bandwidth"],
+                answer: "Control plane and user plane",
+                rationale: "Correct. This separation allows for independent scaling and evolution of signaling (control) and traffic (user) functions, which increases efficiency."
+            },
+            {
+                question: "Which of the following is NOT part of the E-UTRAN?",
+                options: ["eNodeB", "MME", "UE", "X2 Interface"],
+                answer: "MME",
+                rationale: "Correct. The MME is part of the Evolved Packet Core (EPC), not the E-UTRAN (the radio network)."
+            },
+            {
+                question: "What does MIMO stand for?",
+                options: ["Multiple-Input Multiple-Output", "Mobile-Input Mobile-Output", "Maximum-Input Maximum-Output", "Multi-Layer Input Multi-Layer Output"],
+                answer: "Multiple-Input Multiple-Output",
+                rationale: "Correct. This technology uses multiple antennas to transmit and receive data, significantly increasing throughput and reliability."
+            },
+            {
+                question: "The interface that connects two eNodeBs for handover support is called:",
+                options: ["Uu", "S1", "X2", "S10"],
+                answer: "X2",
+                rationale: "Correct. The X2 interface allows eNodeBs to coordinate directly for fast and efficient handovers without involving the core network for every step."
+            },
+            {
+                question: "In the EPC, which entity is responsible for lawful interception?",
+                options: ["HSS", "PGW/SGW", "PCRF", "MME"],
+                answer: "PGW/SGW",
+                rationale: "Correct. The gateways (SGW and PGW) are on the data path and are the points where traffic can be intercepted when legally required."
+            },
+            {
+                question: "Which 3G technology is considered the evolutionary path for GSM networks?",
+                options: ["WCDMA", "CDMA2000", "TD-SCDMA", "GPRS"],
+                answer: "WCDMA",
+                rationale: "Correct. WCDMA (Wideband Code Division Multiple Access) was part of the UMTS standard, which was the 3G evolution for networks based on GSM."
+            },
+            {
+                question: "The introduction of an All-IP network in 4G meant that:",
+                options: ["Only internet browsing was supported.", "All services, including voice, are carried as data packets.", "The network no longer needed gateways.", "The network connected only to other IP-based networks."],
+                answer: "All services, including voice, are carried as data packets.",
+                rationale: "Correct. This is the definition of an All-IP network, eliminating the need for a separate circuit-switched domain for voice calls."
+            },
+            {
+                question: "Which element is unique to the LTE Radio Access Network (E-UTRAN)?",
+                options: ["MSC", "eNodeB", "SGSN", "UE"],
+                answer: "eNodeB",
+                rationale: "Correct. The eNodeB is the specific name for the base station in the LTE radio network."
+            },
+            {
+                question: "In the EPC, the entity that holds the user's IP address for the duration of a session is the:",
+                options: ["eNodeB", "PGW", "SGW", "MME"],
+                answer: "PGW",
+                rationale: "Correct. The PGW allocates the IP address and serves as the anchor point for the session, maintaining that address even if the user moves."
+            },
+            {
+                question: "What is Circuit Switched Fallback (CSFB)?",
+                options: ["A method to improve data speeds", "A procedure for an LTE device to connect to a 2G/3G network for voice calls", "A security feature in 4G", "The process of switching from Wi-Fi to LTE"],
+                answer: "A procedure for an LTE device to connect to a 2G/3G network for voice calls",
+                rationale: "Correct. It's a mechanism used when VoLTE is not available, allowing the device to 'fall back' to an older network to make or receive a call."
+            },
+            {
+                question: "Which of these is a user plane entity in the EPC?",
+                options: ["HSS", "SGW", "MME", "PCRF"],
+                answer: "SGW",
+                rationale: "Correct. The Serving Gateway is a primary component of the user plane, responsible for routing data packets."
+            },
+            {
+                question: "The S5 interface is used between the SGW and PGW when:",
+                options: ["The user is roaming in a different network", "The user is in their home network", "A voice call is being made", "The user is performing a handover"],
+                answer: "The user is in their home network",
+                rationale: "Correct. The S5 interface connects the SGW and PGW within a single operator's home network."
+            },
+            {
+                question: "The main benefit of a 'flat' LTE architecture is:",
+                options: ["Increased security", "Reduced latency and increased efficiency", "Longer battery life for phones", "Easier connection to 2G networks"],
+                answer: "Reduced latency and increased efficiency",
+                rationale: "Correct. By removing intermediate nodes like the RNC, data and signaling have a shorter path, which reduces delay and simplifies the network."
+            }
+        ];
+
+        // --- DOM Elements ---
+        const questionArea = document.getElementById('question-area');
+        const scoreArea = document.getElementById('score-area');
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const scoreText = document.getElementById('score-text');
+        const scoreFeedback = document.getElementById('score-feedback');
+        
+        // --- State ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answerSelected = false;
+
+        // --- Functions ---
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answerSelected = false;
+            questionArea.style.display = 'block';
+            scoreArea.style.display = 'none';
+            nextBtn.parentElement.style.display = 'block';
+            nextBtn.textContent = 'Next Question';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1}/${quizData.length}`;
+            questionText.textContent = currentQuestion.question;
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement('button');
+                button.innerHTML = option;
+                button.classList.add('w-full', 'text-left', 'p-4', 'border-2', 'rounded-lg', 'quiz-option', 'border-slate-200', 'hover:bg-slate-50', 'hover:border-blue-400');
+                button.addEventListener('click', () => selectAnswer(button, option));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
+            feedbackArea.textContent = '';
+            nextBtn.disabled = true;
+            answerSelected = false;
+        }
+
+        function selectAnswer(selectedButton, selectedOption) {
+            if (answerSelected) return;
+            answerSelected = true;
+
+            const currentQuestion = quizData[currentQuestionIndex];
+            const correct = selectedOption === currentQuestion.answer;
+            
+            if (correct) {
+                score++;
+                selectedButton.classList.add('correct');
+                feedbackArea.textContent = 'Correct! ' + (currentQuestion.rationale || '');
+                feedbackArea.classList.add('text-green-600');
+                feedbackArea.classList.remove('text-red-600');
+            } else {
+                selectedButton.classList.add('incorrect');
+                feedbackArea.textContent = `Incorrect. The correct answer is "${currentQuestion.answer}".`;
+                feedbackArea.classList.add('text-red-600');
+                feedbackArea.classList.remove('text-green-600');
+            }
+            
+            Array.from(optionsContainer.children).forEach(button => {
+                if (button.innerText === currentQuestion.answer) {
+                    button.classList.add('correct');
+                }
+                button.disabled = true;
+            });
+            
+            nextBtn.disabled = false;
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextBtn.textContent = 'Show Results';
+            }
+        }
+        
+        function showScore() {
+            questionArea.style.display = 'none';
+            nextBtn.parentElement.style.display = 'none';
+            scoreArea.style.display = 'block';
+            scoreText.textContent = `${score}/${quizData.length}`;
+
+            const percentage = (score / quizData.length) * 100;
+            let feedback = '';
+            if (percentage === 100) {
+                feedback = 'Perfect score! You\'re an expert!';
+            } else if (percentage >= 80) {
+                feedback = 'Excellent job! You know this topic very well.';
+            } else if (percentage >= 50) {
+                feedback = 'Good effort! A little more review could make you an expert.';
+            } else {
+                feedback = 'Good try! Keep studying and you\'ll master it.';
+            }
+            scoreFeedback.textContent = feedback;
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                showQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        // --- Event Listeners ---
+        nextBtn.addEventListener('click', handleNextButton);
+        restartBtn.addEventListener('click', startQuiz);
+
+        // --- Initial Load ---
+        startQuiz();
+    </script>
+</body>
+</html>
