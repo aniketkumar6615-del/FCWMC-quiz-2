@@ -1052,26 +1052,42 @@ function showQuestion() {
 
 function selectAnswer(selectedButton, selectedOption, isRevisit = false) {
     if (answerSelected && !isRevisit) return;
-    if (!isRevisit) {
-        answerSelected = true;
-        userAnswers[currentQuestionIndex] = selectedOption;
-    }
-
+    
     const currentQuestion = quizData[currentQuestionIndex];
     const correct = selectedOption === currentQuestion.answer;
-            
-            if (correct) {
-                score++;
-                selectedButton.classList.add('correct');
-                feedbackArea.textContent = 'Correct! ' + (currentQuestion.rationale || '');
-                feedbackArea.classList.add('text-green-600');
-                feedbackArea.classList.remove('text-red-600');
-            } else {
-                selectedButton.classList.add('incorrect');
-                feedbackArea.textContent = `Incorrect. The correct answer is "${currentQuestion.answer}". ${currentQuestion.rationale || ''}`;
-                feedbackArea.classList.add('text-red-600');
-                feedbackArea.classList.remove('text-green-600');
+    
+    // Only update score if this is a new answer (not revisiting)
+    if (!isRevisit) {
+        answerSelected = true;
+        
+        // If user already answered this question, subtract previous score
+        if (userAnswers[currentQuestionIndex] !== null) {
+            const previousAnswer = userAnswers[currentQuestionIndex];
+            if (previousAnswer === currentQuestion.answer) {
+                score--; // Remove previous correct answer
             }
+        }
+        
+        // Store new answer
+        userAnswers[currentQuestionIndex] = selectedOption;
+        
+        // Add score if correct
+        if (correct) {
+            score++;
+        }
+    }
+    
+    if (correct) {
+        selectedButton.classList.add('correct');
+        feedbackArea.textContent = 'Correct! ' + (currentQuestion.rationale || '');
+        feedbackArea.classList.add('text-green-600');
+        feedbackArea.classList.remove('text-red-600');
+    } else {
+        selectedButton.classList.add('incorrect');
+        feedbackArea.textContent = `Incorrect. The correct answer is "${currentQuestion.answer}". ${currentQuestion.rationale || ''}`;
+        feedbackArea.classList.add('text-red-600');
+        feedbackArea.classList.remove('text-green-600');
+    }
             
             Array.from(optionsContainer.children).forEach(button => {
                 if (button.innerText === currentQuestion.answer) {
@@ -1092,13 +1108,22 @@ function selectAnswer(selectedButton, selectedOption, isRevisit = false) {
     }
 }
         
-        function showScore() {
-            questionArea.style.display = 'none';
-            nextBtn.parentElement.style.display = 'none';
-            scoreArea.style.display = 'block';
-            scoreText.textContent = `${score}/${quizData.length}`;
+function showScore() {
+    questionArea.style.display = 'none';
+    nextBtn.parentElement.style.display = 'none';
+    scoreArea.style.display = 'block';
+    
+    // Recalculate final score based on stored answers
+    let finalScore = 0;
+    userAnswers.forEach((answer, index) => {
+        if (answer === quizData[index].answer) {
+            finalScore++;
+        }
+    });
+    
+    scoreText.textContent = `${finalScore}/${quizData.length}`;
 
-            const percentage = (score / quizData.length) * 100;
+const percentage = (finalScore / quizData.length) * 100;
             let feedback = '';
             if (percentage === 100) {
                 feedback = 'Perfect score! You\'re an expert!';
